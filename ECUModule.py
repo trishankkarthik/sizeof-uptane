@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# 1st-party imports.
+import logging
+
 # 2nd-party imports.
 import CommonModule
 import TargetsModule
@@ -18,7 +21,9 @@ def ECUVersionManifests(num_of_secondaries=1, num_of_keys_per_secondary=1):
   signed = ecuIdentifier + previousTime + currentTime + securityAttack + \
            installedImage
 
-  return signatures + numberOfSignatures + signed
+  ecuVersionManifests = signatures + numberOfSignatures + signed
+  CommonModule.log('ecuVersionManifests', ecuVersionManifests)
+  return ecuVersionManifests
 
 def VehicleVersionManifest(num_of_primary_keys=1, num_of_secondaries=1):
   '''https://github.com/uptane/asn1/blob/master/ECUModule.asn1'''
@@ -34,8 +39,9 @@ def VehicleVersionManifest(num_of_primary_keys=1, num_of_secondaries=1):
   signed = vehicleIdentifier + primaryIdentifier + \
            numberOfECUVersionManifests + ecuVersionManifests + securityAttack
 
-  return signatures + numberOfSignatures + signed
+  vehicleVersionManifest = signatures + numberOfSignatures + signed
+  CommonModule.log('VehicleVersionManifest', vehicleVersionManifest)
+  return vehicleVersionManifest
 
 if __name__ == '__main__':
-  vvm_size = VehicleVersionManifest()
-  print('Vehicle version manifest: {:,} bytes.'.format(vvm_size))
+  VehicleVersionManifest()

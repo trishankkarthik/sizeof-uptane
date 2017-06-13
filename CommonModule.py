@@ -2,6 +2,8 @@
 
 # 1st-party imports.
 import math
+import logging
+import sys
 
 # Independent constants.
 def bits_to_bytes(num_of_bits):
@@ -22,15 +24,23 @@ KEYID_SIZE_IN_BYTES       = SHA256_HASH_SIZE_IN_BYTES
 LENGTH_SIZE_IN_BYTES      = POSITIVE_SIZE_IN_BYTES
 UTCDATETIME_SIZE_IN_BYTES = POSITIVE_SIZE_IN_BYTES
 
+# Log everything to stdout.
+logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
+def log(datatype, size):
+  logging.debug('{}: {:,} bytes.'.format(datatype, size))
+
 # Public functions.
 def Hashes(hashes=(SHA256_HASH_SIZE_IN_BYTES,)):
   hashes_size = 0
 
-  for hash_size in hashes:
+  for digest_size in hashes:
     # Naive but reasonable assumption: we use an int as a tag.
     function = POSITIVE_SIZE_IN_BYTES
-    digest = hash_size
-    hashes_size += function + digest
+    digest = digest_size
+    hash_size = function + digest
+    log('Hash', hash_size)
+    hashes_size += hash_size
 
   return hashes_size
 
@@ -40,4 +50,8 @@ def Signatures(num_of_signatures, keyid=KEYID_SIZE_IN_BYTES,
                value=ED25519_SIG_SIZE_IN_BYTES):
   '''https://github.com/uptane/asn1/blob/master/CommonModule.asn1'''
 
-  return num_of_signatures * (keyid + method + value)
+  signature = keyid + method + value
+  log('Signature', signature)
+  signatures = num_of_signatures * signature
+  log('Signatures', signatures)
+  return signatures

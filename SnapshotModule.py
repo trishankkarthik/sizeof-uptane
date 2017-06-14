@@ -16,11 +16,11 @@ def Snapshot(num_of_targets_metadata_files=1):
   snapshotMetadataFiles = num_of_targets_metadata_files * (filename + version)
 
   snapshot = numberOfSnapshotMetadataFiles + snapshotMetadataFiles
-  CommonModule.log('Snapshot', snapshot)
   return snapshot
 
 # By default, there is only the top-level targets metadata file on a repository.
 def SnapshotMetadata(num_of_keys=1, num_of_targets_metadata_files=1):
-  snapshot = Snapshot(num_of_targets_metadata_files=\
-                      num_of_targets_metadata_files)
-  return MetadataModule.Metadata(snapshot, num_of_keys=num_of_keys)
+  snapshotMetadata = Snapshot(num_of_targets_metadata_files=\
+                              num_of_targets_metadata_files)
+  CommonModule.log('snapshotMetadata', snapshotMetadata)
+  return MetadataModule.Metadata(snapshotMetadata, num_of_keys=num_of_keys)

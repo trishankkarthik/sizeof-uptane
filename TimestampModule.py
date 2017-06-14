@@ -17,8 +17,9 @@ def Timestamp():
   hashes = CommonModule.Hashes()
 
   timestamp = filename + version + length + numberOfHashes + hashes
-  CommonModule.log('Timestamp', timestamp)
   return timestamp
 
 def TimestampMetadata(num_of_keys=1):
-  return MetadataModule.Metadata(Timestamp(), num_of_keys=num_of_keys)
+  timestampMetadata = Timestamp()
+  CommonModule.log('timestampMetadata', timestampMetadata)
+  return MetadataModule.Metadata(timestampMetadata, num_of_keys=num_of_keys)

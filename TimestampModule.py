@@ -5,6 +5,7 @@ import logging
 
 # 2nd-party imports.
 import CommonModule
+import MetadataModule
 
 def Timestamp():
   '''https://github.com/uptane/asn1/blob/master/TimestampModule.asn1'''
@@ -18,3 +19,6 @@ def Timestamp():
   timestamp = filename + version + length + numberOfHashes + hashes
   CommonModule.log('Timestamp', timestamp)
   return timestamp
+
+def TimestampMetadata(num_of_keys=1):
+  return MetadataModule.Metadata(Timestamp(), num_of_keys=num_of_keys)

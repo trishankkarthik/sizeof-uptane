@@ -5,6 +5,7 @@ import logging
 
 # 2nd-party imports.
 import CommonModule
+import MetadataModule
 
 def Snapshot(num_of_targets_metadata_files=1):
   '''https://github.com/uptane/asn1/blob/master/SnapshotModule.asn1'''
@@ -17,3 +18,9 @@ def Snapshot(num_of_targets_metadata_files=1):
   snapshot = numberOfSnapshotMetadataFiles + snapshotMetadataFiles
   CommonModule.log('Snapshot', snapshot)
   return snapshot
+
+# By default, there is only the top-level targets metadata file on a repository.
+def SnapshotMetadata(num_of_keys=1, num_of_targets_metadata_files=1):
+  snapshot = Snapshot(num_of_targets_metadata_files=\
+                      num_of_targets_metadata_files)
+  return MetadataModule.Metadata(snapshot, num_of_keys=num_of_keys)

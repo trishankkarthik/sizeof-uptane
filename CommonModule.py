@@ -17,6 +17,8 @@ ED25519_PUBKEY_SIZE_IN_BYTES = bits_to_bytes(256)
 ED25519_SIG_SIZE_IN_BYTES    = bits_to_bytes(512)
 FILENAME_SIZE_IN_BYTES       = 32
 SHA256_HASH_SIZE_IN_BYTES    = bits_to_bytes(256)
+# 2^8 tags ought to be enough for anybody.
+TAG_SIZE_IN_BYTES            = 1
 
 # Dependent constants.
 # We assume that the keyid is the SHA-256 hash of the public key.
@@ -42,8 +44,7 @@ def Hashes(hashes=(SHA256_HASH_SIZE_IN_BYTES,)):
   hashes_size = 0
 
   for digest_size in hashes:
-    # Naive but reasonable assumption: we use an int as a tag.
-    function = POSITIVE_SIZE_IN_BYTES
+    function = TAG_SIZE_IN_BYTES
     digest = digest_size
     hash_size = function + digest
     log('Hash', hash_size)
@@ -52,8 +53,7 @@ def Hashes(hashes=(SHA256_HASH_SIZE_IN_BYTES,)):
   return hashes_size
 
 def Signatures(num_of_signatures, keyid=KEYID_SIZE_IN_BYTES,
-               # Naive but reasonable assumption: we use an int as a tag.
-               method=POSITIVE_SIZE_IN_BYTES,
+               method=TAG_SIZE_IN_BYTES,
                value=ED25519_SIG_SIZE_IN_BYTES):
   '''https://github.com/uptane/asn1/blob/master/CommonModule.asn1'''
 

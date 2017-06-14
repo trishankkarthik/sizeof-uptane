@@ -47,6 +47,7 @@ def TargetAndCustom(custom=True):
 
 def Targets(num_of_targets, custom=True):
   targets = num_of_targets * TargetAndCustom(custom=custom)
+  CommonModule.log('# of targets', num_of_targets, ' targets')
   CommonModule.log('Targets', targets)
   return targets
 

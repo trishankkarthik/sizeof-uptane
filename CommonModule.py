@@ -10,6 +10,11 @@ def bits_to_bytes(num_of_bits):
   '''Number of bits -> Number of bytes.'''
   return math.ceil(num_of_bits / 8)
 
+def bytes_to_bits(num_of_bytes):
+  '''Number of bytes -> Number of bits.'''
+  return math.ceil(num_of_bytes * 8)
+
+# Sizes.
 # Assuming 32 bits per integer.
 IDENTIFIER_SIZE_IN_BYTES     = 32
 INTEGER_SIZE_IN_BYTES        = bits_to_bytes(32)
@@ -21,6 +26,11 @@ SHA256_HASH_SIZE_IN_BYTES    = bits_to_bytes(256)
 SHA512_HASH_SIZE_IN_BYTES    = bits_to_bytes(512)
 # 2^8 tags ought to be enough for anybody.
 TAG_SIZE_IN_BYTES            = 1
+
+# Speeds.
+# https://en.wikipedia.org/wiki/CAN_bus
+KILO_BITS_PER_SECOND             = 10**3
+CAN_LOW_SPEED_IN_BITS_PER_SECOND = 40 * KILO_BITS_PER_SECOND
 
 # Dependent constants.
 # We assume that the keyid is the SHA-256 hash of the public key.
@@ -37,12 +47,6 @@ VERSION_SIZE_IN_BYTES     = POSITIVE_SIZE_IN_BYTES
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
                     format='[%(levelname)s] %(message)s')
 
-# TODO: Add a depth parameter to indent log statements, so it's clearer where
-# things came from.
-def log(datatype, number, unit=' bytes'):
-  logging.debug('{0:<23}: {1:>8,d}{2}'.format(datatype, number, unit))
-
-# Public functions.
 def Hashes(hashes=(SHA256_HASH_SIZE_IN_BYTES,)):
   total_size = 0
 
@@ -85,3 +89,14 @@ def Signatures(num_of_signatures, keyid=KEYID_SIZE_IN_BYTES,
   signatures = num_of_signatures * signature
   log('Signatures', signatures)
   return signatures
+
+# TODO: Add a depth parameter to indent log statements, so it's clearer where
+# things came from.
+def log(datatype, number, unit=' bytes'):
+  logging.debug('{0:<23}: {1:>8,d}{2}'.format(datatype, number, unit))
+
+def time(num_of_bytes, speed=CAN_LOW_SPEED_IN_BITS_PER_SECOND):
+  num_of_bits = bytes_to_bits(num_of_bytes)
+  # NOTE: Things take time. 1, not 0, seconds.
+  time = math.ceil(num_of_bits / speed)
+  log('Time', time, unit=' seconds')

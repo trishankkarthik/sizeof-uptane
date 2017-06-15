@@ -21,9 +21,12 @@ def ECUVersionManifests(num_of_secondaries=1, num_of_keys_per_secondary=1):
   signed = ecuIdentifier + previousTime + currentTime + securityAttack + \
            installedImage
 
-  ecuVersionManifests = signatures + numberOfSignatures + signed
-  CommonModule.log('ecuVersionManifests', ecuVersionManifests)
-  return ecuVersionManifests
+  ECUVersionManifest = signatures + numberOfSignatures + signed
+  CommonModule.log('ECUVersionManifest', ECUVersionManifest)
+  ECUVersionManifests = num_of_secondaries * ECUVersionManifest
+  CommonModule.log('# of secondaries', num_of_secondaries, unit=' secondaries')
+  CommonModule.log('ECUVersionManifests', ECUVersionManifests)
+  return ECUVersionManifests
 
 def VehicleVersionManifest(num_of_primary_keys=1, num_of_secondaries=1):
   '''https://github.com/uptane/asn1/blob/master/ECUModule.asn1'''
@@ -44,4 +47,4 @@ def VehicleVersionManifest(num_of_primary_keys=1, num_of_secondaries=1):
   return vehicleVersionManifest
 
 if __name__ == '__main__':
-  VehicleVersionManifest()
+  CommonModule.time(VehicleVersionManifest(num_of_secondaries=127))

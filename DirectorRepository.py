@@ -33,4 +33,4 @@ def Bundle(num_of_ecus=1):
 
 if __name__ == '__main__':
   # Worst-case scenario.
-  Bundle(num_of_ecus=128)
+  CommonModule.time(Bundle(num_of_ecus=128))

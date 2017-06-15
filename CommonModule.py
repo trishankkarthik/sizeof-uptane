@@ -5,6 +5,9 @@ import math
 import logging
 import sys
 
+# 3rd-party imports.
+import humanize
+
 # Independent constants.
 def bits_to_bytes(num_of_bits):
   '''Number of bits -> Number of bytes.'''
@@ -93,7 +96,15 @@ def Signatures(num_of_signatures, keyid=KEYID_SIZE_IN_BYTES,
 # TODO: Add a depth parameter to indent log statements, so it's clearer where
 # things came from.
 def log(datatype, number, unit=' bytes'):
-  logging.debug('{0:<23}: {1:>8,d}{2}'.format(datatype, number, unit))
+  # Kludge, but whatever, it works.
+  if unit.endswith('bytes'):
+    number, unit = humanize.naturalsize(number).split()
+    logging.debug('{0:<23}: {1:>8} {2}'.format(datatype, number, unit))
+  elif unit.endswith('seconds'):
+    number, unit = humanize.naturaldelta(number).split()
+    logging.debug('{0:<23}: {1:>8} {2}'.format(datatype, number, unit))
+  else:
+    logging.debug('{0:<23}: {1:>8,d}{2}'.format(datatype, number, unit))
 
 def time(num_of_bytes, speed=CAN_LOW_SPEED_IN_BITS_PER_SECOND):
   num_of_bits = bytes_to_bits(num_of_bytes)

@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-# 1st-party imports.
-import logging
-
 # 2nd-party imports.
 import CommonModule
 

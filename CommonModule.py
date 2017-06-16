@@ -99,12 +99,12 @@ def log(datatype, number, unit=' bytes', human=True):
   # Kludge, but whatever, it works.
   if human and unit.endswith('bytes'):
     number, unit = humanize.naturalsize(number).split()
-    logging.debug('{0:<23}: {1:>8} {2}'.format(datatype, number, unit))
+    logging.debug('{0:<30}: {1:>8} {2}'.format(datatype, number, unit))
   elif human and unit.endswith('seconds'):
     number, unit = humanize.naturaldelta(number).split()
-    logging.debug('{0:<23}: {1:>8} {2}'.format(datatype, number, unit))
+    logging.debug('{0:<30}: {1:>8} {2}'.format(datatype, number, unit))
   else:
-    logging.debug('{0:<23}: {1:>8,d}{2}'.format(datatype, number, unit))
+    logging.debug('{0:<30}: {1:>8,d}{2}'.format(datatype, number, unit))
 
 # TODO: This is from my best understanding. Needs review by a CAN expert.
 def iso_tp_overhead(num_of_bytes):
@@ -144,7 +144,7 @@ def iso_tp_overhead(num_of_bytes):
 
   log('ISO-TP overhead', overhead_in_bytes)
   total = num_of_bytes + overhead_in_bytes
-  log('Total', total)
+  log('Payload + overhead', total)
   return total
 
 def time(num_of_bytes, speed=CAN_LOW_SPEED_IN_BITS_PER_SECOND):

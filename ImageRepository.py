@@ -59,5 +59,8 @@ if __name__ == '__main__':
   # From the forum, we hear that an OEM is expected to delegate to, at most, 100
   # tier-1 suppliers.
   # https://uptane.umtri.umich.edu/forum/t/typical-number-of-tier-1-suppliers/164?u=trishank
-  CommonModule.time(Bundle(num_of_tier1_suppliers=100,
-                           num_of_targets_per_tier1_supplier=100))
+  CommonModule.time(
+    CommonModule.iso_tp_overhead(
+      Bundle(num_of_tier1_suppliers=100, num_of_targets_per_tier1_supplier=100)
+    )
+  )

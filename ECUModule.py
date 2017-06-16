@@ -47,4 +47,8 @@ def VehicleVersionManifest(num_of_primary_keys=1, num_of_secondaries=1):
   return vehicleVersionManifest
 
 if __name__ == '__main__':
-  CommonModule.time(VehicleVersionManifest(num_of_secondaries=127))
+  CommonModule.time(
+    CommonModule.iso_tp_overhead(
+      VehicleVersionManifest(num_of_secondaries=127)
+    )
+  )

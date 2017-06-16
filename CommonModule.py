@@ -95,16 +95,57 @@ def Signatures(num_of_signatures, keyid=KEYID_SIZE_IN_BYTES,
 
 # TODO: Add a depth parameter to indent log statements, so it's clearer where
 # things came from.
-def log(datatype, number, unit=' bytes'):
+def log(datatype, number, unit=' bytes', human=True):
   # Kludge, but whatever, it works.
-  if unit.endswith('bytes'):
+  if human and unit.endswith('bytes'):
     number, unit = humanize.naturalsize(number).split()
     logging.debug('{0:<23}: {1:>8} {2}'.format(datatype, number, unit))
-  elif unit.endswith('seconds'):
+  elif human and unit.endswith('seconds'):
     number, unit = humanize.naturaldelta(number).split()
     logging.debug('{0:<23}: {1:>8} {2}'.format(datatype, number, unit))
   else:
     logging.debug('{0:<23}: {1:>8,d}{2}'.format(datatype, number, unit))
+
+# TODO: This is from my best understanding. Needs review by a CAN expert.
+def iso_tp_overhead(num_of_bytes):
+  '''https://en.wikipedia.org/wiki/ISO_15765-2'''
+
+  # On-demand overhead for each non-full packet.
+  def packet_overhead(remainder):
+    assert remainder >= 0
+    assert remainder < 4095
+
+    if remainder <= 7:
+      overhead_in_bytes = 0
+    else:
+      # First 6 bytes in the first frame.
+      overhead_in_bytes = 2
+      # After that, 7 bytes for each consecutive frame.
+      num_of_full_frames = (remainder - 6) // 7
+      overhead_in_bytes += num_of_full_frames
+      # Wasted bytes, if any, in a not-full consecutive frame.
+      leftover = (remainder - 6) % 7
+      overhead_in_bytes += 7 - leftover
+    return overhead_in_bytes
+
+  # A maximum of 7 bytes of payload can be sent using normal addressing.
+  if num_of_bytes <= 7:
+    overhead_in_bytes = 0
+  else:
+    # Precomputed overhead for each full packet.
+    # Each full packet can send 4095 bytes of payload.
+    # I must admit 4095 makes no sense to me, because it wastes the last frame
+    # to send 1 actual byte of payload. I must have misunderstood something.
+    num_of_full_packets = num_of_bytes // 4095
+    overhead_in_bytes = num_of_full_packets * 593
+    # Overhead for the remainder, if any.
+    remainder = num_of_bytes % 4095
+    overhead_in_bytes += packet_overhead(remainder)
+
+  log('ISO-TP overhead', overhead_in_bytes)
+  total = num_of_bytes + overhead_in_bytes
+  log('Total', total)
+  return total
 
 def time(num_of_bytes, speed=CAN_LOW_SPEED_IN_BITS_PER_SECOND):
   num_of_bits = bytes_to_bits(num_of_bytes)

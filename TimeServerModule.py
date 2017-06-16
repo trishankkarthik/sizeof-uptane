@@ -44,4 +44,6 @@ if __name__ == '__main__':
   num_of_ecus = 128
   sequenceOfTokens = SequenceOfTokens(num_of_ecus=num_of_ecus)
   currentTime = CurrentTime(num_of_ecus=num_of_ecus)
-  CommonModule.time(sequenceOfTokens + currentTime)
+  CommonModule.time(
+    CommonModule.iso_tp_overhead(sequenceOfTokens + currentTime)
+  )

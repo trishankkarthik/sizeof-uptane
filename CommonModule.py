@@ -125,7 +125,7 @@ def iso_tp_overhead(num_of_bytes):
       overhead_in_bytes += num_of_full_frames
       # Wasted bytes, if any, in a not-full consecutive frame.
       leftover = (remainder - 6) % 7
-      overhead_in_bytes += 8 - leftover
+      overhead_in_bytes += 8 - leftover if leftover else 0
     return overhead_in_bytes
 
   # A maximum of 7 bytes of payload can be sent using normal addressing.

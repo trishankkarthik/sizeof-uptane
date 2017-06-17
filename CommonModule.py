@@ -106,7 +106,7 @@ def log(datatype, number, unit=' bytes', human=True):
   else:
     logging.debug('{0:<30}: {1:>8,d}{2}'.format(datatype, number, unit))
 
-# TODO: This is from my best understanding. Needs review by a CAN expert.
+# This is from my best understanding from discussions with @samlauzon.
 def iso_tp_overhead(num_of_bytes):
   '''https://en.wikipedia.org/wiki/ISO_15765-2'''
 
@@ -118,9 +118,9 @@ def iso_tp_overhead(num_of_bytes):
     if remainder <= 7:
       overhead_in_bytes = 0
     else:
-      # First 6 bytes in the first frame.
+      # First 6 bytes of the payload in the first frame.
       overhead_in_bytes = 2
-      # After that, 7 bytes for each consecutive frame.
+      # After that, 7 bytes of the payload in each consecutive frame.
       num_of_full_frames = (remainder - 6) // 7
       overhead_in_bytes += num_of_full_frames
       # Wasted bytes, if any, in a not-full consecutive frame.
@@ -132,13 +132,20 @@ def iso_tp_overhead(num_of_bytes):
   if num_of_bytes <= 7:
     overhead_in_bytes = 0
   else:
-    # Precomputed overhead for each full packet.
+    # We have to use multiple packets, each of which can send between 8 to 4095
+    # bytes of payload.
+    # First, there is a fixed overhead for transmitting a single frame that
+    # announces the number of upcoming packets.
+    overhead_in_bytes = 8
+    # Next, we compute the total overhead of full packets.
     # Each full packet can send 4095 bytes of payload.
     # I must admit 4095 makes no sense to me, because it wastes the last frame
     # to send 1 actual byte of payload. I must have misunderstood something.
+    # We use a precomputed overhead for each full packet.
     num_of_full_packets = num_of_bytes // 4095
-    overhead_in_bytes = num_of_full_packets * 593
-    # Overhead for the remainder, if any.
+    overhead_in_bytes += num_of_full_packets * 593
+    # Finally, we compute the overhead of sending the remainder of the payload
+    # in a not-full packet, if any.
     remainder = num_of_bytes % 4095
     overhead_in_bytes += packet_overhead(remainder)
 
@@ -147,8 +154,8 @@ def iso_tp_overhead(num_of_bytes):
   log('Payload + overhead', total)
   return total
 
-def time(num_of_bytes, speed=CAN_LOW_SPEED_IN_BITS_PER_SECOND):
+def time(num_of_bytes, speed_in_bits_per_sec=CAN_LOW_SPEED_IN_BITS_PER_SECOND):
   num_of_bits = bytes_to_bits(num_of_bytes)
   # NOTE: Things take time. 1, not 0, seconds.
-  time = math.ceil(num_of_bits / speed)
+  time = math.ceil(num_of_bits / speed_in_bits_per_sec)
   log('Time', time, unit=' seconds')

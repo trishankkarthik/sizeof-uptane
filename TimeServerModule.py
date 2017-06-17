@@ -38,7 +38,7 @@ def CurrentTime(num_of_ecus=1, num_of_keys_for_time_server=1):
   return currentTime
 
 if __name__ == '__main__':
-  num_of_ecus = 128
+  num_of_ecus = 100
   sequenceOfTokens = SequenceOfTokens(num_of_ecus=num_of_ecus)
   currentTime = CurrentTime(num_of_ecus=num_of_ecus)
   total = sequenceOfTokens + currentTime

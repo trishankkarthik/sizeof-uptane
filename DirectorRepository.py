@@ -30,4 +30,4 @@ def Bundle(num_of_ecus=1):
 
 if __name__ == '__main__':
   # Worst-case scenario.
-  CommonModule.time(CommonModule.iso_tp_overhead(Bundle(num_of_ecus=128)))
+  CommonModule.time(CommonModule.iso_tp_overhead(Bundle(num_of_ecus=100)))

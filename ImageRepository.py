@@ -53,11 +53,15 @@ def Bundle(num_of_tier1_suppliers=1, num_of_targets_per_tier1_supplier=1):
   return bundle
 
 if __name__ == '__main__':
-  # From the forum, we hear that an OEM is expected to delegate to, at most, 100
-  # tier-1 suppliers.
-  # https://uptane.umtri.umich.edu/forum/t/typical-number-of-tier-1-suppliers/164?u=trishank
+  # We expect an OEM to delegate to, at most, 100 tier-1 suppliers.
+  # We expect that typically there are 5 images per ECU.
+  # We assume that the OEM maintains a separate image repository per vehicle
+  # (make, model, year).
+  # These image repositories can safely reside on the same physical server,
+  # and may each simply take up a separate directory.
+  # The OEM may reuse the root role keys across these image repositories.
   CommonModule.time(
     CommonModule.iso_tp_overhead(
-      Bundle(num_of_tier1_suppliers=100, num_of_targets_per_tier1_supplier=100)
+      Bundle(num_of_tier1_suppliers=100, num_of_targets_per_tier1_supplier=5)
     )
   )

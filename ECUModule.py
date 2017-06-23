@@ -4,7 +4,7 @@
 import CommonModule
 import TargetsModule
 
-def ECUVersionManifests(num_of_secondaries=1, num_of_keys_per_secondary=1):
+def ECUVersionManifests(num_of_ecus=1, num_of_keys_per_secondary=1):
   '''https://github.com/uptane/asn1/blob/master/ECUModule.asn1'''
 
   signatures = CommonModule.Signatures(num_of_keys_per_secondary)
@@ -20,12 +20,12 @@ def ECUVersionManifests(num_of_secondaries=1, num_of_keys_per_secondary=1):
 
   ECUVersionManifest = signatures + numberOfSignatures + signed
   CommonModule.log('ECUVersionManifest', ECUVersionManifest)
-  ECUVersionManifests = num_of_secondaries * ECUVersionManifest
-  CommonModule.log('# of secondaries', num_of_secondaries, unit=' secondaries')
+  ECUVersionManifests = num_of_ecus * ECUVersionManifest
+  CommonModule.log('# of secondaries', num_of_ecus, unit=' secondaries')
   CommonModule.log('ECUVersionManifests', ECUVersionManifests)
   return ECUVersionManifests
 
-def VehicleVersionManifest(num_of_primary_keys=1, num_of_secondaries=1):
+def VehicleVersionManifest(num_of_primary_keys=1, num_of_ecus=1):
   '''https://github.com/uptane/asn1/blob/master/ECUModule.asn1'''
 
   signatures = CommonModule.Signatures(num_of_primary_keys)
@@ -34,7 +34,7 @@ def VehicleVersionManifest(num_of_primary_keys=1, num_of_secondaries=1):
   vehicleIdentifier = CommonModule.IDENTIFIER_SIZE_IN_BYTES
   primaryIdentifier = CommonModule.IDENTIFIER_SIZE_IN_BYTES
   numberOfECUVersionManifests = CommonModule.LENGTH_SIZE_IN_BYTES
-  ecuVersionManifests = ECUVersionManifests(num_of_secondaries)
+  ecuVersionManifests = ECUVersionManifests(num_of_ecus)
   securityAttack = 1024 #bytes
   signed = vehicleIdentifier + primaryIdentifier + \
            numberOfECUVersionManifests + ecuVersionManifests + securityAttack
@@ -46,6 +46,6 @@ def VehicleVersionManifest(num_of_primary_keys=1, num_of_secondaries=1):
 if __name__ == '__main__':
   CommonModule.time(
     CommonModule.iso_tp_overhead(
-      VehicleVersionManifest(num_of_secondaries=127)
+      VehicleVersionManifest(num_of_ecus=100)
     )
   )
